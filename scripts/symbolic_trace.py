@@ -10,7 +10,7 @@ scope cut for a 2-day budget; full taint from recv() to sink across the
 whole call graph is future work (this matches the PRD's FR-3.4: bounded
 exploration via budgets, not a promise of completeness).
 
-Run with: python3 symbolic_trace.py <binary> <function_addr_hex> <sink_addr_hex>
+Run with: python3 symbolic_trace.py <binary> <function_addr_hex> <sink_addr_hex> [sink_function_name]
 """
 import sys
 import json
@@ -78,9 +78,6 @@ def run_trace(binary_path: str, func_addr: int, sink_addr: int) -> dict:
     if found_state is not None:
         result["tainted_path"] = [hex(a) for a in found_state.history.bbl_addrs] + [hex(found_state.addr)]
         try:
-            # ip/sp are cross-architecture register aliases in angr -- this
-            # works whether the binary is x86_64, ARM, MIPS, etc, unlike
-            # hardcoding an architecture-specific register name like r0
             result["crash_state"] = {
                 "fault_address": hex(found_state.addr),
                 "registers": {
@@ -98,6 +95,11 @@ if __name__ == "__main__":
     binary_path = sys.argv[1]
     func_addr = int(sys.argv[2], 16)
     sink_addr = int(sys.argv[3], 16)
+    sink_function = sys.argv[4] if len(sys.argv) > 4 else "unknown"
 
     result = run_trace(binary_path, func_addr, sink_addr)
+    result["sink_function"] = sink_function
+    result["note"] = ("intra-procedural: parameter treated as symbolic/attacker-controlled; "
+                       "full network-to-sink taint across the whole call graph is descoped "
+                       "for time, see known-limitations")
     print(json.dumps(result, indent=2))
