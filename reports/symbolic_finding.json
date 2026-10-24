@@ -1,0 +1,11 @@
+{
+  "binary": "usr/sbin/uhttpd",
+  "function_addr": "0x14294",
+  "sink_addr": "0x14334",
+  "sink_function": "sprintf",
+  "steps_taken": 11,
+  "elapsed_seconds": 1.16,
+  "path_found": true,
+  "tainted_path": ["0x14294","0x142ec","0x142fc","0x142ac","0x142b8","0x1190c","0x1000f0","0x142c0","0x142c8","0x14310","0x14320","0x14334"],
+  "note": "intra-procedural: parameter treated as symbolic/attacker-controlled; full network-to-sink taint across the whole call graph is descoped for time, see known-limitations"
+}
