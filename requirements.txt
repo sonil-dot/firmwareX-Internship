@@ -1,0 +1,11 @@
+angr>=10.0.0
+pyelftools>=0.31
+# NOTE: binwalk is NOT a pip package worth installing -- the PyPI package
+# of that name is unrelated/broken. Install the real tool via:
+#   apt-get install binwalk          (Debian/Ubuntu/WSL)
+#   brew install binwalk             (macOS)
+
+# If you hit "ImportError: cannot open libz3.so" or claripy/angr conflicts
+# after installing, run:
+#   pip install "z3-solver==5.3.1.0" --break-system-packages
+# (angr pins a specific z3-solver version; other packages can bump it)
