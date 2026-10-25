@@ -1,6 +1,6 @@
-# FirmwareX — Final Write-up
+FirmwareX — Final Write-up
 
-## What was built
+What was built
 
 An automated IoT firmware vulnerability analysis pipeline, run end to end
 against OWASP IoTGoat (a real, publicly available router firmware image).
@@ -18,7 +18,7 @@ The pipeline:
 5. Normalizes every finding from all three stages into one CWE-classified
    schema and renders a static HTML report
 
-## Results (real run against IoTGoat-raspberry-pi2)
+Results (real run against IoTGoat-raspberry-pi2)
 
 | Metric | Result |
 |---|---|
@@ -31,9 +31,9 @@ The pipeline:
 | Symbolic taint-to-sink findings | 1 verified path in `uhttpd` reaching a `sprintf` call (CWE-134) |
 | Total normalized findings | 201 |
 
-## Design decisions & trade-offs
+ Design decisions & trade-offs
 
-**NetworkX instead of Neo4j.** Not needed for this project's actual
+NetworkX instead of Neo4j.** Not needed for this project's actual
 pipeline (firmware analysis doesn't require attack-path graphing — that
 was the companion red-team project's concern), but the same reasoning
 applies elsewhere in this codebase: favor in-process, zero-infrastructure
@@ -52,14 +52,14 @@ than full network-to-sink taint analysis. The finding should be read as
 not "this is remotely exploitable over the network without further
 analysis."
 
-**No QEMU full-system emulation, no fuzzing, no dashboard/API.** All
+No QEMU full-system emulation, no fuzzing, no dashboard/API.** All
 three are listed as "Should", not "Must", in the PRD's MoSCoW
 prioritization. Static analysis, secret scanning, and symbolic execution
 cover the "Must" requirements end to end; the cut capabilities would
 have required most of a second week to build and validate safely
 (especially network-service emulation and containment).
 
-**Confidence calibration over raw counts.** The secret scanner's first
+Confidence calibration over raw counts.** The secret scanner's first
 pass produced 102 findings; 78 of those were high-entropy hits inside
 compiled binary code, which is not a meaningful signal (machine code is
 naturally high-entropy). Filtering those down to 24 calibrated findings,
@@ -68,7 +68,7 @@ fixtures (e.g. `libmbedcrypto.so`'s embedded test certificates), was a
 deliberate choice to keep the report trustworthy rather than inflating
 the finding count.
 
-## Known limitations
+Known limitations
 
 - Symbolic execution is intra-procedural (see above), covering one
   binary (`uhttpd`) as a proof of technique, not all 176.
@@ -82,7 +82,7 @@ the finding count.
   secrets — flagged at `heuristic` confidence rather than presented as
   confirmed findings, and would need manual review to resolve either way.
 
-## Debugging notes (real issues hit and fixed, not hypothetical)
+Debugging notes (real issues hit and fixed, not hypothetical)
 
 1. `pip install binwalk` installs an unrelated, broken package — the
    real tool is `apt-get install binwalk`.
@@ -105,7 +105,7 @@ the finding count.
    normalizer expected — caught when running the pipeline fresh on a
    second machine, fixed at the source rather than patched around.
 
-## Conclusion
+ Conclusion
 
 The core "Must" requirements of the PRD are met with real, independently
 reproduced results (identical output was obtained running the full
